@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
+using System;
 
 
 [RequireComponent(typeof(Rigidbody))]
@@ -46,8 +48,9 @@ public class Player_Move : MonoBehaviour
     public float timetoPressBase;
     public int DashForce;
     public int[] keyPressCounts = new int[8];
-    private float[] cooldownTimers = new float[8];
+    private float cooldownTimer;
     public float cooldownDuration = 1f;
+    
     // Jump
 
     //Basic Atak
@@ -80,6 +83,7 @@ public class Player_Move : MonoBehaviour
         VerifyDoubleClick();
 
         CheckKey();
+
     }
 
     public void Movement()
@@ -139,15 +143,16 @@ public class Player_Move : MonoBehaviour
                 keyPressCounts[index]++;
                 if (keyPressCounts[index] == 2)
                 {
-                    if (Time.time >= cooldownTimers[index])
+                    if (Time.time >= cooldownTimer)
                     {
                         Debug.Log(key.ToString() + " pressed twice!");
-                        rb.AddForce(transform.forward * DashForce, ForceMode.Impulse);
-                        cooldownTimers[index] = Time.time + cooldownDuration;
+                        rb.AddForce(transform.forward * 100, ForceMode.Impulse);
+                        cooldownTimer = Time.time + cooldownDuration;
                     }
                     keyPressCounts[index] = 0;
                 }
             }
+
         }
        
        
