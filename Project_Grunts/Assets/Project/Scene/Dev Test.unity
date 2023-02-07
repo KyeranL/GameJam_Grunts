@@ -933,4 +933,6 @@ MonoBehaviour:
   timetoPressBase: 0.4
   DashForce: 200
   keyPressCounts: 0000000000000000000000000000000000000000000000000000000000000000
-  cooldownDuration: 5
+  cooldownDuration: 0
+  lastKey: 0
+  currentKey: 0
