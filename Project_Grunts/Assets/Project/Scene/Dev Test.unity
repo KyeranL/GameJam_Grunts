@@ -209,7 +209,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 107536011}
   m_LocalRotation: {x: 0.41405243, y: -0, z: -0, w: 0.91025305}
-  m_LocalPosition: {x: 0, y: 11.13, z: -4.62}
+  m_LocalPosition: {x: 1.1, y: 11.7, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -486,7 +486,7 @@ Transform:
   m_GameObject: {fileID: 1067246309}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.72092533, y: -0.4769411, z: 5.8407316}
-  m_LocalScale: {x: 20.671904, y: 0.27144042, z: 12.83335}
+  m_LocalScale: {x: 34.482803, y: 0.27144042, z: 48.76673}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -958,11 +958,11 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &1728993198
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1062,18 +1062,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70912bd648979eb468c45900df49a747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 400
+  speed: 10
   rotationSpeed: 10
   isHolding: 0
   timetoPress: 0.4
   timetoPressBase: 0.4
-  DashForce: 200
+  DashForce: 300
   keyPressCounts: 0000000000000000000000000000000000000000000000000000000000000000
-  cooldownDuration: 0
+  cooldownDuration: 2
   lastKey: 0
   resetTimer: 0
-  resetDuration: 2
+  resetDuration: 1
   hasDash: 0
+  jumpForce: 15
+  turnOffDuration: 3
 --- !u!1 &1742674050
 GameObject:
   m_ObjectHideFlags: 0

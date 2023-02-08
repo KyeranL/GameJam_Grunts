@@ -59,7 +59,9 @@ public class Player_Move : MonoBehaviour
 
     // Jump
 
-
+    public float jumpForce;
+    public float turnOffDuration = 2.0f; // How long to turn off gravity for
+    private float turnOffTime; // Time when gravity was turned off
     //Basic Atak
 
     //Shoot
@@ -81,7 +83,7 @@ public class Player_Move : MonoBehaviour
     {
         Movement();
 
-
+        
 
 
     }
@@ -91,7 +93,10 @@ public class Player_Move : MonoBehaviour
         VerifyHold();
 
         CheckDash();
-       
+
+        Jump();
+
+        GravityOn();
 
     }
 
@@ -124,8 +129,11 @@ public class Player_Move : MonoBehaviour
         rb.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(targetRotation.x, Mathf.Round(targetRotation.y / 45) * 45, targetRotation.z), Time.deltaTime * rotationSpeed);
         //Movement
 
-        Vector3 vel = input * speed * Time.deltaTime;
+        Vector3 vel = input * speed;
+
+        vel.y = rb.velocity.y - 0.5f;
         rb.velocity = vel;
+      
 
     }
 
@@ -140,15 +148,35 @@ public class Player_Move : MonoBehaviour
         Dash(KeyCode.S, 6);
         Dash(KeyCode.D, 7);
 
-
     }
 
+    public void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Apply the jump force
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            // Turn off gravity
+            rb.useGravity = false;
+            turnOffTime = Time.time;
+        }
+    }
+
+    public void GravityOn()
+    {
+        if (rb.useGravity && Time.time >= turnOffTime + turnOffDuration)
+        {
+            // Turn gravity back on
+            rb.useGravity = true;
+        }
+    }
     #region DASH
     void Dash(KeyCode key, int index)
     {
         if (Input.GetKeyDown(key))
         {
-
+           
             if (!isHolding)
             {
 
@@ -239,6 +267,7 @@ public class Player_Move : MonoBehaviour
 
         if (horizontal > 0 || vertical > 0 || horizontal < 0 || vertical < 0)
         {
+
             timetoPress -= Time.deltaTime;
             if (timetoPress < timetoPressBase / 2)
             {
