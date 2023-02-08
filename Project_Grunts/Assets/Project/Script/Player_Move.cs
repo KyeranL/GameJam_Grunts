@@ -7,9 +7,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 using System;
+using Mono.Cecil.Cil;
 
 
-[RequireComponent(typeof(Rigidbody))]
+
 public class Player_Move : MonoBehaviour
 {
     #region Movement Variables
@@ -51,8 +52,13 @@ public class Player_Move : MonoBehaviour
     private float cooldownTimer;
     public float cooldownDuration = 1f;
     public KeyCode lastKey = KeyCode.None;
-    public KeyCode currentKey = KeyCode.None;
+    public float resetTimer;
+    public float resetDuration = 2f;
+    public bool hasDash;
+
+
     // Jump
+
 
     //Basic Atak
 
@@ -66,7 +72,8 @@ public class Player_Move : MonoBehaviour
     {
 
         rb = GetComponent<Rigidbody>();
-       
+        
+
     }
 
     // Update is called once per frame
@@ -81,9 +88,10 @@ public class Player_Move : MonoBehaviour
 
     public void Update()
     {
-        VerifyDoubleClick();
+        VerifyHold();
 
-        CheckKey();
+        CheckDash();
+       
 
     }
 
@@ -121,29 +129,28 @@ public class Player_Move : MonoBehaviour
 
     }
 
-    public void CheckKey()
+    public void CheckDash()
     {
-        CheckDoublePress(KeyCode.UpArrow, 0);
-        CheckDoublePress(KeyCode.DownArrow, 1);
-        CheckDoublePress(KeyCode.LeftArrow, 2);
-        CheckDoublePress(KeyCode.RightArrow, 3);
-        CheckDoublePress(KeyCode.W, 4);
-        CheckDoublePress(KeyCode.A, 5);
-        CheckDoublePress(KeyCode.S, 6);
-        CheckDoublePress(KeyCode.D, 7);
+        Dash(KeyCode.UpArrow, 0);
+        Dash(KeyCode.DownArrow, 1);
+        Dash(KeyCode.LeftArrow, 2);
+        Dash(KeyCode.RightArrow, 3);
+        Dash(KeyCode.W, 4);
+        Dash(KeyCode.A, 5);
+        Dash(KeyCode.S, 6);
+        Dash(KeyCode.D, 7);
 
-        
 
     }
 
-
-   void CheckDoublePress(KeyCode key, int index)
-{
-    if (Input.GetKeyDown(key))
+    #region DASH
+    void Dash(KeyCode key, int index)
     {
-
-        if (!isHolding) 
+        if (Input.GetKeyDown(key))
         {
+
+            if (!isHolding)
+            {
 
                 if (key == lastKey)
                 {
@@ -152,7 +159,6 @@ public class Player_Move : MonoBehaviour
                     {
                         if (Time.time >= cooldownTimer)
                         {
-                            Debug.Log(key.ToString() + " pressed twice!");
                             rb.AddForce(transform.forward * DashForce, ForceMode.Impulse);
                             cooldownTimer = Time.time + cooldownDuration;
                         }
@@ -171,26 +177,29 @@ public class Player_Move : MonoBehaviour
                     keyPressCounts[index] = 1;
                 }
 
-           
-        }
-        else
-        {
+
+            }
+            else
+            {
                 if (key == lastKey)
                 {
+
                     keyPressCounts[index]++;
                     if (keyPressCounts[index] == 3)
                     {
                         if (Time.time >= cooldownTimer)
                         {
-                            Debug.Log(key.ToString() + " pressed twice!");
+                           
                             rb.AddForce(transform.forward * DashForce, ForceMode.Impulse);
                             cooldownTimer = Time.time + cooldownDuration;
+
                         }
                         for (int i = 0; i < keyPressCounts.Length; i++)
                         {
-                            keyPressCounts[i] = 0;
+                            keyPressCounts[index] = 1; 
                         }
                     }
+
                 }
                 else
                 {
@@ -200,35 +209,31 @@ public class Player_Move : MonoBehaviour
                     }
                     keyPressCounts[index] = 1;
                 }
-            
-        }
+
+            }
             lastKey = key;
         }
-}
-
-    void CheckKeyPress(KeyCode key, int index)
-    {
-        if (Input.GetKeyDown(key))
+        else
         {
-            if (key == lastKey)
+            if (!isHolding)
             {
-                keyPressCounts[index]++;
-            }
-            else
-            {
-                for (int i = 0; i < keyPressCounts.Length; i++)
+                if (Time.time > resetTimer)
                 {
-                    keyPressCounts[i] = 0;
+                    for (int i = 0; i < keyPressCounts.Length; i++)
+                    {
+                        keyPressCounts[i] = 0;
+                    }
+                    resetTimer = Time.time + resetDuration;
                 }
-                keyPressCounts[index] = 1;
             }
-            lastKey = key;
+           
         }
-
-
     }
 
-    public void VerifyDoubleClick()
+    #endregion
+
+    #region VERIFY HOLD
+    public void VerifyHold()
     {
 
 
@@ -259,11 +264,13 @@ public class Player_Move : MonoBehaviour
 
     }
 
+    #endregion
+
    
 }
 
 
-   
+
 
 
 
