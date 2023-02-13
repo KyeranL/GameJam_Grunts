@@ -28,7 +28,8 @@ public class Player_Move : MonoBehaviour
     //Movement
     public float speed = 200f;
     public float rotationSpeed = 10;
-
+    public bool ismoving;
+    
 
     //Life//
     int Life;
@@ -54,9 +55,10 @@ public class Player_Move : MonoBehaviour
     public KeyCode lastKey = KeyCode.None;
     public float resetTimer;
     public float resetDuration = 2f;
-    public bool hasDash;
+    private float timerdash;
+    public float timerdashing;
 
-
+    public bool TeleportDash;
     // Jump
 
     public float jumpForce;
@@ -74,32 +76,39 @@ public class Player_Move : MonoBehaviour
     {
 
         rb = GetComponent<Rigidbody>();
-        
 
-    }
+        ismoving = true;
+        TeleportDash = false;
+}
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Movement();
-
-        
-
+        #region MovementCall
+        if (ismoving) 
+        {
+            Movement();
+        }
+        else if (timerdash > 0)
+        {
+            timerdash -= Time.fixedDeltaTime;
+        }
+        else
+            ismoving = true;
+        #endregion
 
     }
 
     public void Update()
     {
         VerifyHold();
-
-        CheckDash();
-
+        CheckDashKeys();
+        Teleport_Dash();
         Jump();
-
         GravityOn();
-
     }
 
+    #region Movement
     public void Movement()
     {
         horizontal = Input.GetAxis("Horizontal");
@@ -136,8 +145,10 @@ public class Player_Move : MonoBehaviour
       
 
     }
+    #endregion
 
-    public void CheckDash()
+    #region CheckDashKeys
+    public void CheckDashKeys()
     {
         Dash(KeyCode.UpArrow, 0);
         Dash(KeyCode.DownArrow, 1);
@@ -149,7 +160,9 @@ public class Player_Move : MonoBehaviour
         Dash(KeyCode.D, 7);
 
     }
+    #endregion
 
+    #region Jump
     public void Jump()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -162,7 +175,9 @@ public class Player_Move : MonoBehaviour
             turnOffTime = Time.time;
         }
     }
+    #endregion
 
+    #region GravityOn
     public void GravityOn()
     {
         if (rb.useGravity && Time.time >= turnOffTime + turnOffDuration)
@@ -171,7 +186,9 @@ public class Player_Move : MonoBehaviour
             rb.useGravity = true;
         }
     }
-    #region DASH
+    #endregion
+
+    #region Dash
     void Dash(KeyCode key, int index)
     {
         if (Input.GetKeyDown(key))
@@ -189,6 +206,8 @@ public class Player_Move : MonoBehaviour
                         {
                             rb.AddForce(transform.forward * DashForce, ForceMode.Impulse);
                             cooldownTimer = Time.time + cooldownDuration;
+                            ismoving = false;
+                            timerdash = timerdashing;
                         }
                         for (int i = 0; i < keyPressCounts.Length; i++)
                         {
@@ -220,6 +239,8 @@ public class Player_Move : MonoBehaviour
                            
                             rb.AddForce(transform.forward * DashForce, ForceMode.Impulse);
                             cooldownTimer = Time.time + cooldownDuration;
+                            ismoving = false;
+                            timerdash = timerdashing;
 
                         }
                         for (int i = 0; i < keyPressCounts.Length; i++)
@@ -260,7 +281,31 @@ public class Player_Move : MonoBehaviour
 
     #endregion
 
-    #region VERIFY HOLD
+    #region Dash to teleport
+
+    public void Teleport_Dash()
+    {
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            TeleportDash = true;
+        }
+       
+
+        if(TeleportDash)
+        {
+            timerdashing = 0;
+            DashForce = 300;
+        }
+        else
+        {
+            timerdashing = .2f;
+            DashForce = 30;
+        }
+    }
+
+    #endregion
+
+    #region Verify hold
     public void VerifyHold()
     {
 
