@@ -60,7 +60,10 @@ public class Player_Move : MonoBehaviour
 
     public bool TeleportDash;
     // Jump
-
+    
+    public bool Isgrounded = false;
+    public float groundCheckDistance;
+    private float bufferCheckDistance = 0.1f;
     public float jumpForce;
     public float turnOffDuration = 2.0f; // How long to turn off gravity for
     private float turnOffTime; // Time when gravity was turned off
@@ -163,9 +166,25 @@ public class Player_Move : MonoBehaviour
     #endregion
 
     #region Jump
+
+    
+
+
     public void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        groundCheckDistance = (GetComponent<CapsuleCollider>().height / 2) + bufferCheckDistance;
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, groundCheckDistance))
+        {
+            Isgrounded = true;
+        }
+        else
+        {
+            Isgrounded = false;
+        }
+     
+        if (Input.GetKeyDown(KeyCode.Space) && Isgrounded)
         {
             // Apply the jump force
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
