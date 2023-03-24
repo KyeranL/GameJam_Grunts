@@ -1149,22 +1149,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rotationSpeed: 10
-  ismoving: 0
-  isHolding: 0
   timetoPress: 0.4
   timetoPressBase: 0.4
-  DashForce: 300
-  keyPressCounts: 0000000000000000000000000000000000000000000000000000000000000000
+  DashForce: 400
   cooldownDuration: 2
-  lastKey: 0
   resetTimer: 0
   resetDuration: 1
-  timerdashing: 0
   TeleportDash: 0
-  Isgrounded: 0
-  groundCheckDistance: 0
   jumpForce: 15
-  turnOffDuration: 3
+  gravityTurnOffDuration: 3
 --- !u!136 &1728993203
 CapsuleCollider:
   m_ObjectHideFlags: 0

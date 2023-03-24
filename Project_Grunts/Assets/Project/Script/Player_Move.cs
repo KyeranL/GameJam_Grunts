@@ -28,7 +28,7 @@ public class Player_Move : MonoBehaviour
     //Movement
     public float speed = 200f;
     public float rotationSpeed = 10;
-    public bool ismoving;
+    private bool ismoving;
     
 
     //Life//
@@ -45,27 +45,27 @@ public class Player_Move : MonoBehaviour
     #region Habilities
 
     //Dash
-    public bool isHolding = false;
+    private bool isHolding = false;
     public float timetoPress;
     public float timetoPressBase;
     public int DashForce;
-    public int[] keyPressCounts = new int[8];
+    private int[] keyPressCounts = new int[8];
     private float cooldownTimer;
     public float cooldownDuration = 1f;
-    public KeyCode lastKey = KeyCode.None;
+    private KeyCode lastKey = KeyCode.None;
     public float resetTimer;
     public float resetDuration = 2f;
     private float timerdash;
-    public float timerdashing;
+    private float timerdashing;
 
     public bool TeleportDash;
     // Jump
     
-    public bool Isgrounded = false;
-    public float groundCheckDistance;
+    private bool IsGrounded = false;
+    private float groundCheckDistance;
     private float bufferCheckDistance = 0.1f;
     public float jumpForce;
-    public float turnOffDuration = 2.0f; // How long to turn off gravity for
+    public float gravityTurnOffDuration = 2.0f; // How long to turn off gravity for
     private float turnOffTime; // Time when gravity was turned off
     //Basic Atak
 
@@ -177,14 +177,14 @@ public class Player_Move : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, -transform.up, out hit, groundCheckDistance))
         {
-            Isgrounded = true;
+            IsGrounded = true;
         }
         else
         {
-            Isgrounded = false;
+            IsGrounded = false;
         }
      
-        if (Input.GetKeyDown(KeyCode.Space) && Isgrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
         {
             // Apply the jump force
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -199,7 +199,7 @@ public class Player_Move : MonoBehaviour
     #region GravityOn
     public void GravityOn()
     {
-        if (rb.useGravity && Time.time >= turnOffTime + turnOffDuration)
+        if (rb.useGravity && Time.time >= turnOffTime + gravityTurnOffDuration)
         {
             // Turn gravity back on
             rb.useGravity = true;
