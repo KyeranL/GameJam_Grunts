@@ -35,7 +35,7 @@ public class Player_Interaction : MonoBehaviour
                 Transform feelInteraction = feelObject.transform.Find("Feel_interaction");
                 if (feelInteraction != null && !feedbackPlayed)
                 {
-                    // Get the MMFeel component from the child object and play its feedbacks
+                    // Get the MMFeedback component from the child object and play its feedbacks
                     MMFeedbacks feelFeedbacks = feelInteraction.GetComponent<MMFeedbacks>();
                     if (feelFeedbacks != null)
                     {
@@ -51,10 +51,30 @@ public class Player_Interaction : MonoBehaviour
             Debug.DrawLine(transform.position, transform.position + transform.forward * raycastDistance, Color.green);
 
             // Set hitObject to null if there is no object hit by the raycast
-            hitObject = null;
+           
 
-            // Reset feedbackPlayed variable if the raycast doesn't hit anything
-            feedbackPlayed = false;
+            // Find the child object with the name "Feel" if feedbackPlayed is true
+            if (feedbackPlayed)
+            {
+                GameObject feelObject = hitObject.transform.Find("Feel").gameObject;
+                if (feelObject != null)
+                {
+                    // Find the child object with the name "exit_interaction"
+                    Transform exitInteraction = feelObject.transform.Find("Exit_interaction");
+                    if (exitInteraction != null)
+                    {
+                        // Get the MMFeedback component from the child object and play its feedbacks
+                        MMFeedbacks exitFeedbacks = exitInteraction.GetComponent<MMFeedbacks>();
+                        if (exitFeedbacks != null)
+                        {
+                            exitFeedbacks.PlayFeedbacks();
+                            feedbackPlayed = false;
+                        }
+                    }
+                }
+            }
+
+            hitObject = null;
         }
     }
 }
