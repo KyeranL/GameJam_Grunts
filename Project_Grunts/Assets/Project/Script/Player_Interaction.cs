@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.Feedbacks;
 
 public class Player_Interaction : MonoBehaviour
 {
     public float raycastDistance = 10f;
     public LayerMask layerMask;
     public GameObject hitObject;
+    public GameObject childInteractive;
+    private bool feedbackPlayed = false;
 
-    void Update()
+    private void Update()
     {
         // Cast a ray from the transform's forward direction
         Ray ray = new Ray(transform.position, transform.forward);
@@ -23,6 +26,24 @@ public class Player_Interaction : MonoBehaviour
 
             // Draw a line between the starting point of the raycast and the point where it hits a collider
             Debug.DrawLine(transform.position, hit.point, Color.red);
+
+            // Find the child object with the name "Feel"
+            GameObject feelObject = hitObject.transform.Find("Feel").gameObject;
+            if (feelObject != null)
+            {
+                // Find the child object with the name "Feel_interaction"
+                Transform feelInteraction = feelObject.transform.Find("Feel_interaction");
+                if (feelInteraction != null && !feedbackPlayed)
+                {
+                    // Get the MMFeel component from the child object and play its feedbacks
+                    MMFeedbacks feelFeedbacks = feelInteraction.GetComponent<MMFeedbacks>();
+                    if (feelFeedbacks != null)
+                    {
+                        feelFeedbacks.PlayFeedbacks();
+                        feedbackPlayed = true;
+                    }
+                }
+            }
         }
         else
         {
@@ -31,6 +52,10 @@ public class Player_Interaction : MonoBehaviour
 
             // Set hitObject to null if there is no object hit by the raycast
             hitObject = null;
+
+            // Reset feedbackPlayed variable if the raycast doesn't hit anything
+            feedbackPlayed = false;
         }
     }
 }
+
